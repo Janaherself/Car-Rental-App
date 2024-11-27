@@ -1,7 +1,6 @@
 using CarRentalApp.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +11,9 @@ builder.Services.AddDbContext<CarRentalAppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("defaultDB"));
     });
 
-builder.Services.AddDefaultIdentity<AppUser>().AddEntityFrameworkStores<CarRentalAppDbContext>();
+builder.Services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<CarRentalAppDbContext>();
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -39,12 +40,57 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-
-
 app.MapRazorPages();
+
+using(var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+    var roles = new[] { "Customer", "Admin" };
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(new IdentityRole(role));
+        }
+    }
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
+
+    string email = "admin@admin.com";
+    string password = "AdminPa$$w0rd";
+
+    if(await userManager.FindByEmailAsync(email) == null)
+    {
+        var user = new AppUser
+        {
+            UserName = email,
+            Email = email,
+            FirstName = "Admin",
+            LastName = "Admin",
+            PhoneNumber = "1234567890",
+            DateOfBirth = new DateTime(1991, 1, 1),
+            AddressLine1 = "111 Geeks street",
+            AddressLine2 = "1A, 123@guru",
+            City = "City of Exceptions",
+            Country = "W WebApp",
+            DriversLicenseNumber = "0101GEEK"
+        };
+
+        await userManager.CreateAsync(user, password);
+
+        await userManager.AddToRoleAsync(user, "Admin");
+    }
+}
 
 app.Run();
