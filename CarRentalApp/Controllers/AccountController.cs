@@ -11,7 +11,7 @@ namespace CarRentalApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login(string returnUrl = null)
+        public IActionResult Login(string? returnUrl = "Index")
         {
             ViewData["ReturnUrl"] = returnUrl;
             return RedirectToPage("/Account/Login", new { area = "Identity" });
