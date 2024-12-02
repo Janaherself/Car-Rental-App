@@ -86,8 +86,8 @@ using (var scope = app.Services.CreateScope())
 {
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
 
-    string email = "admin@admin.com";
-    string password = "AdminPa$$w0rd";
+    string email = Environment.GetEnvironmentVariable("adminEmail")!;
+    string password = Environment.GetEnvironmentVariable("adminPassword")!;
 
     if(await userManager.FindByEmailAsync(email) == null)
     {
