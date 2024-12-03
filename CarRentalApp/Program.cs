@@ -1,11 +1,15 @@
 using CarRentalApp.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using CarRentalApp.App;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
+builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 
+builder.Services.AddScoped<ICarRepository, CarRepository>();
 
 builder.Services.AddDbContext<CarRentalAppDbContext>(options =>
     {
@@ -66,7 +70,11 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+app.UseAntiforgery();
+
 app.MapRazorPages();
+
+app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 
 using(var scope = app.Services.CreateScope())
 {
