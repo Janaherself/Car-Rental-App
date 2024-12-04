@@ -1,0 +1,21 @@
+﻿@page "/book/{carId:int}"
+@model CarRentalApp.Views.Home.CarReservationModel
+@{
+    ViewData["Title"] = "Book Cars";
+}
+
+
+<h3>Booking: @Model.Car.Manufacturer @Model.Car.Model</h3>
+<p>Price Per Day: $@Model.Car.PricePerDay</p>
+
+<form method="post">
+    <div class="form-group">
+        <label for="StartDate">Start Date</label>
+        <input type="date" id="StartDate" name="StartDate" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="EndDate">End Date</label>
+        <input type="date" id="EndDate" name="EndDate" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Confirm Booking</button>
+</form>

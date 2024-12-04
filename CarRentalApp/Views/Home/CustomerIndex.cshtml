@@ -1,0 +1,39 @@
+﻿@page "dashboard"
+@model CarRentalApp.Views.Home.CustomerIndexModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="list-group">
+                <a href="/reservations" class="list-group-item list-group-item-action">My Reservations</a>
+                <a href="/booking-history" class="list-group-item list-group-item-action">Booking History</a>
+                <a href="/profile" class="list-group-item list-group-item-action">Profile Settings</a>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <h3>Available Cars for Rent</h3>
+
+            <div class="row">
+                @foreach (var car in Model.AvailableCars)
+                {
+                    <div class="col-md-4 mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">@car.Manufacturer @car.Model</h5>
+                                <p class="card-text">Year: @car.Year</p>
+                                <p class="card-text">Price Per Day: $@car.PricePerDay</p>
+                                <a href="@Url.Page("/BookCar", new { carId = car.CarId })" class="btn btn-primary">Book Now</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

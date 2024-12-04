@@ -1,0 +1,84 @@
+﻿@page "/car-search" 
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+<div class="container mt-4">
+    <h3 class="text-center text-primary">Search for Available Cars</h3>
+    
+    <div class="card mt-4">
+        <div class="card-body">
+            <h5 class="card-title">Search By Date</h5>
+            <EditForm Model="searchModel" OnValidSubmit="SearchByDate" FormName="Name">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="startDate" class="form-label">Start Date</label>
+                        <InputDate @bind-Value="searchModel.StartDate" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="endDate" class="form-label">End Date</label>
+                        <InputDate @bind-Value="searchModel.EndDate" class="form-control" />
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Search</button>
+            </EditForm>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-body">
+            <h5 class="card-title">Search By Name</h5>
+            <input 
+                class="form-control" 
+                @bind-value="SearchName"
+                placeholder="Start typing to search..." 
+                @onkeyup="(e) => SearchByName()" 
+                @bind-value:event="oninput" />
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-body">
+            <h5 class="card-title">Search By Location</h5>
+            <input 
+                class="form-control" 
+                @bind-value="SearchLocation"
+                placeholder="Start typing to search..."
+                @onkeyup="(e) => SearchByLocation()" 
+                @bind-value:event="oninput" />
+        </div>
+    </div>
+</div>
+
+@if (FoundCars.Any())
+{
+    <div class="container mt-5">
+        <h4 class="text-primary">Available Cars</h4>
+        <div class="row g-4">
+            @foreach (var car in FoundCars)
+            {
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">@car.Manufacturer @car.Model</h5>
+                            <p class="card-text">
+                                <strong>Year:</strong> @car.Year <br />
+                                <strong>Price Per Day:</strong> $@car.PricePerDay <br />
+                                <strong>Location:</strong> @car.Location
+                            </p>
+                            <span class="badge bg-success">@car.Status</span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning mt-4 text-center">
+        No cars found for the given criteria.
+    </div>
+}
