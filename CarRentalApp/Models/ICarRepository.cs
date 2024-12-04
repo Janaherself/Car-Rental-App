@@ -7,5 +7,6 @@ namespace CarRentalApp.Models
         Task<List<Car>?> SerachCarsByDate(DateOnly startDate, DateOnly endDate);
         Task<List<Car>?> SerachCarsByLocation(string searchQuery);
         Task<List<Car>?> SerachCarsByName(string searchQuery);
+        Task<List<Car>> GetAvailableCarsAsync();
     }
 }

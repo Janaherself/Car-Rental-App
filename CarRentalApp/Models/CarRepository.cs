@@ -27,5 +27,14 @@ namespace CarRentalApp.Models
                     ( !(endDate < r.StartDate || startDate > r.EndDate) )
                 )).ToListAsync();
         }
+
+        public async Task<List<Car>> GetAvailableCarsAsync()
+        {
+            var today = DateOnly.FromDateTime(DateTime.Now);
+            return await _context.Cars
+                .Where(c => !_context.Reservations.Any(r => r.CarId == c.CarId &&
+                    (r.StartDate <= today && r.EndDate >= today)))
+                .ToListAsync();
+        }
     }
 }

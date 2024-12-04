@@ -119,7 +119,7 @@ namespace CarRentalApp.Areas.Identity.Pages.Account
                     }
                     else if (roles.Contains("Customer"))
                     {
-                        return LocalRedirect(returnUrl); ;
+                        return LocalRedirect("~/dashboard"); ;
                     }
 
                     return RedirectToAction("Index", "Home");
